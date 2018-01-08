@@ -1,10 +1,11 @@
 package wechat_brain
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 var (
@@ -27,9 +28,9 @@ func GetFromApi(req *http.Request, quiz string, options []string) (res map[strin
 	if resp == nil {
 		return
 	}
-	bs, _ := ioutil.ReadAll(resp.Body)
+	doc, _ := goquery.NewDocumentFromReader(resp.Body)
 	defer resp.Body.Close()
-	str := string(bs)
+	str := doc.Find("#content_left .result").Text()
 	for _, option := range options {
 		res[option] = strings.Count(str, option)
 	}
