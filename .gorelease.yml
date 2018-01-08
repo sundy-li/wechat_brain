@@ -1,0 +1,16 @@
+builds:
+  - main: cmd/main.go
+    binary: jump
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+# Archive customization
+archive:
+  format: zip
+  replacements:
+    amd64: 64-bit
+    darwin: macOS
+    linux: linux

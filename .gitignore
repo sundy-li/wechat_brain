@@ -1,3 +1,5 @@
 vendor
 .idea
 tmp
+.DS_Store
+dist
