@@ -14,7 +14,9 @@
 
 
 ## 运行示例
-![自动提示标准答案](docs/2.jpg)
 
-![自动估算最可能的答案](docs/1.jpg)
-
+<div align="center">    
+ <img src="./docs/3.jpeg" width = "300" alt="配置代理" align=center />
+ <img src="./docs/2.jpg" width = "300" alt="自动提示标准答案" align=center />
+ <img src="./docs/1.jpg" width = "300" alt="自动估算最可能的答案" align=center />
+</div>
