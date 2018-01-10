@@ -19,6 +19,7 @@
  <img src="./docs/3.jpeg" width = "300" alt="配置代理" align=center />
  <img src="./docs/2.jpg" width = "300" alt="自动提示标准答案" align=center />
  <img src="./docs/1.jpg" width = "300" alt="自动估算最可能的答案" align=center />
+ <img src="./docs/4.jpeg" width = "300" alt="自动提示标准答案" align=center />
 </div>
 
 - 注意,第一个图片的host和端口是我的云主机ip端口,你添加证书后可以用这个ip端口测试下, 测试通过后在pc跑起来你的服务后, 将此改为你的电脑ip和端口
