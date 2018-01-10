@@ -47,7 +47,6 @@ func (s *spider) Init() {
 			handleQuestionReq(bs)
 		} else if ctx.Req.URL.Path == `/question/fight/choose` {
 			bs, _ := ioutil.ReadAll(req.Body)
-			log.Println("request choose==>", string(bs))
 			req.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			handleChooseReq(bs)
 		}
@@ -61,7 +60,6 @@ func (s *spider) Init() {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			bsNew := handleQuestionResp(bs)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
-			log.Println("response findQuiz==>", string(bs))
 
 		} else if ctx.Req.URL.Path == `/question/fight/choose` {
 			bs, _ := ioutil.ReadAll(resp.Body)
