@@ -12,6 +12,20 @@
 - 运行方法二: 安装go环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`
 - 手机wifi设置代理为pc的ip和端口,启动小程序王者头脑
 
+## 合并题库
+
+- 合并后,提交一个merge request给我,我将合并题库
+```
+	➜  wechat_brain git:(master) ✗ files=`ls /data/tmp/questions*`
+	➜  wechat_brain git:(master) ✗ echo $files
+	/data/tmp/questions.data
+	➜  wechat_brain git:(master) ✗ go run cmd/question_utils.go -a merge  -fs "$files"
+	2018/01/11 20:01:23 merged file /data/tmp/questions.data
+	2018/01/11 20:01:23 merged 4286 questions
+	2018/01/11 20:01:23 total questions => 4286
+	➜  wechat_brain git:(master) ✗
+
+```
 
 ## 运行示例
 

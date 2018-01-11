@@ -63,3 +63,45 @@ func ShowAllQuestions() {
 	})
 
 }
+
+func CountQuestions() int {
+	var i int
+	memoryDb.View(func(tx *bolt.Tx) error {
+		// Assume bucket exists and has keys
+		b := tx.Bucket([]byte(QuestionBucket))
+		c := b.Cursor()
+
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			i++
+		}
+		return nil
+	})
+	return i
+}
+
+func MergeQuestions(fs ...string) {
+	var i int
+	for _, f := range fs {
+		thirdDb, err := bolt.Open(f, 0600, nil)
+		if err != nil {
+			log.Println("error in merge file db "+f, err.Error())
+			continue
+		}
+		thirdDb.View(func(thirdTx *bolt.Tx) error {
+			// Assume bucket exists and has keys
+			b := thirdTx.Bucket([]byte(QuestionBucket))
+			c := b.Cursor()
+			for k, v := c.First(); k != nil; k, v = c.Next() {
+				memoryDb.Update(func(tx *bolt.Tx) error {
+					b := tx.Bucket([]byte(QuestionBucket))
+					err := b.Put(k, v)
+					i++
+					return err
+				})
+			}
+			log.Println("merged file", f)
+			return nil
+		})
+	}
+	log.Println("merged", i, "questions")
+}
