@@ -12,9 +12,17 @@
 - 运行方法二: 安装go环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`
 - 手机wifi设置代理为pc的ip和端口,启动小程序王者头脑
 
+
+## 问题
+
+- ios端由于goproxy无法代理websocket问题,暂时无法使用,希望大家可以来完善这个问题,见[这个issue](https://github.com/sundy-li/wechat_brain/issues/18)
+
+
 ## 合并题库
 
-- 合并后,提交一个merge request给我,我将合并题库
+- 方式一:提交题库 `https://github.com/sundy-li/wechat_brain/issues/17`
+- 方式二:脚本合并,合并后,提交一个merge request给我,我将合并题库
+
 ```	
 	## files为待合并文件,此脚本将合并files文件到当前的questions.data文件中
 	➜  wechat_brain git:(master) ✗ files="/data/tmp/questions.data"
