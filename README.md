@@ -15,7 +15,8 @@
 ## 合并题库
 
 - 合并后,提交一个merge request给我,我将合并题库
-```
+```	
+	## files为待合并文件,此脚本将合并files文件到当前的questions.data文件中
 	➜  wechat_brain git:(master) ✗ files=`ls /data/tmp/questions*`
 	➜  wechat_brain git:(master) ✗ echo $files
 	/data/tmp/questions.data
