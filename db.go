@@ -38,6 +38,14 @@ func StoreQuestion(question *Question) error {
 	return nil
 }
 
+func KvStoreQuestion(k, v string) error {
+	return memoryDb.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(QuestionBucket))
+		err := b.Put([]byte(k), []byte(v))
+		return err
+	})
+}
+
 func FetchQuestion(question *Question) (str string) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
