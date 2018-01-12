@@ -49,6 +49,13 @@ func (s *spider) Init() {
 			bs, _ := ioutil.ReadAll(req.Body)
 			req.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			handleChooseReq(bs)
+		} else if ctx.Req.URL.Hostname() == `abc.com` {
+			resp = new(http.Response)
+			resp.StatusCode = 200
+			resp.Header = make(http.Header)
+			resp.Header.Add("Content-Disposition", "attachment; filename=ca.crt")
+			resp.Header.Add("Content-Type", "application/octet-stream")
+			resp.Body = ioutil.NopCloser(bytes.NewReader(goproxy.CA_CERT))
 		}
 		return
 	}
