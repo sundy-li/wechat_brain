@@ -19,18 +19,7 @@
 
 
 ## 合并题库
-
-- 方式一:提交题库 `https://github.com/sundy-li/wechat_brain/issues/17`
-- 方式二:脚本合并,合并后,提交一个merge request给我,我将合并题库
-
-```	
-	## files为待合并文件,此脚本将合并files文件到当前的questions.data文件中
-	➜  wechat_brain git:(master) ✗ files="/data/tmp/questions.data"
-	➜  wechat_brain git:(master) ✗ go run cmd/question_utils.go -a merge  -fs "$files"
-	2018/01/11 20:01:23 merged file /data/tmp/questions.data
-	2018/01/11 20:01:23 merged 4286 questions
-	2018/01/11 20:01:23 total questions => 4286
-```
+- 提交到[这里](https://github.com/sundy-li/wechat_brain/issues/17), 程序会定期合并
 
 ## 运行示例
 
