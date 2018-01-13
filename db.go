@@ -141,7 +141,7 @@ func DecodeQuestionCols(bs []byte) *QuestionCols {
 	if err == nil {
 		return q
 	} else {
-		q = &QuestionCols{Answer: string(bs)}
+		q = NewQuestionCols(string(bs))
 	}
 	return q
 }
