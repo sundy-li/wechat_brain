@@ -45,7 +45,7 @@ func FetchQuestion(question *Question) (str string) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
 		v := b.Get([]byte(question.Data.Quiz))
-		q := DecodeQuestionCols(v)
+		q := DecodeQuestionCols(v, time.Now().Unix())
 		str = q.Answer
 		return nil
 	})
@@ -56,7 +56,7 @@ func FetchQuestionTime(quiz string) (res int64) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
 		v := b.Get([]byte(quiz))
-		q := DecodeQuestionCols(v)
+		q := DecodeQuestionCols(v, time.Now().Unix())
 		res = q.Update
 		return nil
 	})
@@ -109,7 +109,7 @@ func MergeQuestions(fs ...string) {
 				memoryDb.Update(func(tx *bolt.Tx) error {
 					b := tx.Bucket([]byte(QuestionBucket))
 					//三方包的时间
-					q := DecodeQuestionCols(v)
+					q := DecodeQuestionCols(v, 0)
 					//数据库中的时间
 					if q.Update > FetchQuestionTime(string(k)) {
 						b.Put(k, q.GetData())
@@ -136,13 +136,14 @@ func NewQuestionCols(answer string) *QuestionCols {
 	}
 }
 
-func DecodeQuestionCols(bs []byte) *QuestionCols {
+func DecodeQuestionCols(bs []byte, update int64) *QuestionCols {
 	var q = &QuestionCols{}
 	err := json.Unmarshal(bs, q)
 	if err == nil {
 		return q
 	} else {
 		q = NewQuestionCols(string(bs))
+		q.Update = update
 	}
 	return q
 }
