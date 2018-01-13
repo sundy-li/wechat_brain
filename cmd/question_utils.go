@@ -49,6 +49,7 @@ func main() {
 			})
 		})
 	}
+	brain.ShowAllQuestions()
 	total := brain.CountQuestions()
 	log.Println("total questions =>", total)
 }

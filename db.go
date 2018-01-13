@@ -1,8 +1,10 @@
 package wechat_brain
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/boltdb/bolt"
 )
@@ -31,26 +33,31 @@ func StoreQuestion(question *Question) error {
 	if question.CalData.TrueAnswer != "" {
 		return memoryDb.Update(func(tx *bolt.Tx) error {
 			b := tx.Bucket([]byte(QuestionBucket))
-			err := b.Put([]byte(question.Data.Quiz), []byte(question.CalData.TrueAnswer))
+			v := NewQuestionCols(question.CalData.TrueAnswer)
+			err := b.Put([]byte(question.Data.Quiz), v.GetData())
 			return err
 		})
 	}
 	return nil
 }
 
-func KvStoreQuestion(k, v string) error {
-	return memoryDb.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(QuestionBucket))
-		err := b.Put([]byte(k), []byte(v))
-		return err
-	})
-}
-
 func FetchQuestion(question *Question) (str string) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
 		v := b.Get([]byte(question.Data.Quiz))
-		str = string(v)
+		q := DecodeQuestionCols(v)
+		str = q.Answer
+		return nil
+	})
+	return
+}
+
+func FetchQuestionTime(quiz string) (res int64) {
+	memoryDb.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(QuestionBucket))
+		v := b.Get([]byte(quiz))
+		q := DecodeQuestionCols(v)
+		res = q.Update
 		return nil
 	})
 	return
@@ -65,7 +72,6 @@ func ShowAllQuestions() {
 		for k, v := c.First(); k != nil; k, v = c.Next() {
 			fmt.Printf("key=%s, value=%s\n", k, v)
 			kv[string(k)] = string(v)
-
 		}
 		return nil
 	})
@@ -102,9 +108,12 @@ func MergeQuestions(fs ...string) {
 			for k, v := c.First(); k != nil; k, v = c.Next() {
 				memoryDb.Update(func(tx *bolt.Tx) error {
 					b := tx.Bucket([]byte(QuestionBucket))
-					err := b.Put(k, v)
-					i++
-					return err
+					//三方包的时间
+					q := DecodeQuestionCols(v)
+					//数据库中的时间
+					q.Update = max(FetchQuestionTime(string(k)), q.Update)
+					b.Put(k, q.GetData())
+					return nil
 				})
 			}
 			log.Println("merged file", f)
@@ -112,4 +121,39 @@ func MergeQuestions(fs ...string) {
 		})
 	}
 	log.Println("merged", i, "questions")
+}
+
+type QuestionCols struct {
+	Answer string `json:"a"`
+	Update int64  `json:"ts"`
+}
+
+func NewQuestionCols(answer string) *QuestionCols {
+	return &QuestionCols{
+		Answer: answer,
+		Update: time.Now().Unix(),
+	}
+}
+
+func DecodeQuestionCols(bs []byte) *QuestionCols {
+	var q = &QuestionCols{}
+	err := json.Unmarshal(bs, q)
+	if err == nil {
+		return q
+	} else {
+		q = &QuestionCols{Answer: string(bs)}
+	}
+	return q
+}
+
+func (q *QuestionCols) GetData() []byte {
+	bs, _ := json.Marshal(q)
+	return bs
+}
+
+func max(a, b int64) int64 {
+	if a > b {
+		return a
+	}
+	return b
 }
