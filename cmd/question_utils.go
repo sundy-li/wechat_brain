@@ -1,8 +1,10 @@
+//跑这个脚本的时候记得关掉其他服务,因为这个脚本需要读取questions.data
 package main
 
 import (
 	"archive/zip"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -10,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/boltdb/bolt"
 	brain "github.com/sundy-li/wechat_brain"
 
 	"github.com/PuerkitoBio/goquery"
@@ -26,6 +29,8 @@ func init() {
 	flag.StringVar(&source, "s", "show", "source value -> show | file | issue")
 	flag.StringVar(&fs, "fs", "", "merge data files")
 	flag.Parse()
+
+	initDb()
 }
 
 func main() {
@@ -40,10 +45,13 @@ func main() {
 		doc, _ := goquery.NewDocument(issueUrl)
 		doc.Find("div.comment").Each(func(index int, comment *goquery.Selection) {
 			comment.Find("td.d-block p a").Each(func(i int, s *goquery.Selection) {
-				if strings.Contains(s.Text(), "questions.zip") {
+				if strings.Contains(s.Text(), ".zip") {
 					href, _ := s.Attr("href")
 					if href != "" {
-						handleZipUrl(href)
+						err := handleZipUrl(href)
+						if err != nil {
+							log.Println("Error", err.Error())
+						}
 					}
 				}
 			})
@@ -56,6 +64,20 @@ func main() {
 }
 
 func handleZipUrl(url string) error {
+	println("handling", url)
+	var exist bool
+	memoryDb.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(QuestionUrlBucket))
+		v := b.Get([]byte(url))
+		if len(v) != 0 {
+			exist = true
+		}
+		return nil
+	})
+	if exist {
+		log.Println("skip already merged file url", url)
+		return nil
+	}
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -71,19 +93,22 @@ func handleZipUrl(url string) error {
 	if err != nil {
 		return err
 	}
-
 	//merge data
 	brain.MergeQuestions(tmpDir + "questions.data")
 	log.Println("merged", url)
+
+	memoryDb.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(QuestionUrlBucket))
+		b.Put([]byte(url), []byte("ok"))
+		return nil
+	})
 	return nil
 }
 
 // Unzip will un-compress a zip archive,
 // moving all files and folders to an output directory
 func Unzip(src, dest string) ([]string, error) {
-
 	var filenames []string
-
 	r, err := zip.OpenReader(src)
 	if err != nil {
 		return filenames, err
@@ -130,8 +155,29 @@ func Unzip(src, dest string) ([]string, error) {
 			if err != nil {
 				return filenames, err
 			}
-
 		}
 	}
 	return filenames, nil
+}
+
+//questions.data中存入url的cache, 防止重复merge,提高性能
+
+var (
+	memoryDb          *bolt.DB
+	QuestionUrlBucket = "QuestionUrl"
+)
+
+func initDb() {
+	var err error
+	memoryDb, err = bolt.Open("merge.data", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	memoryDb.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte(QuestionUrlBucket))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
 }
