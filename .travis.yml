@@ -1,0 +1,28 @@
+language: go
+go:
+  - 1.9
+
+install: true
+
+before_script:
+  - mkdir -p vendor/github.com/sundy-li/
+  - cd vendor/github.com/sundy-li/
+  - git clone --branch=master "https://${GH_TOKEN}@${GH_REF}"
+  - cd wechat_brain
+  # 环境错误
+  - rm -rf spider.go
+
+script:
+   - go run cmd/question_utils.go -s="issue"
+
+after_script:
+  - git add *.data
+  - git commit -m "auto update data"
+  - git push -f --quiet
+
+branches:
+  only:
+    - travis
+env:
+  global:
+    - GH_REF: github.com/uoks/wechat_brain.git
