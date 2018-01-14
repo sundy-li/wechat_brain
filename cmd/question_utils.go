@@ -40,7 +40,7 @@ func main() {
 		doc, _ := goquery.NewDocument(issueUrl)
 		doc.Find("div.comment").Each(func(index int, comment *goquery.Selection) {
 			comment.Find("td.d-block p a").Each(func(i int, s *goquery.Selection) {
-				if strings.Contains(s.Text(), "questions.zip") {
+				if (strings.Contains(s.Text(), "questions") && strings.Contains(s.Text(), ".zip")) {
 					href, _ := s.Attr("href")
 					if href != "" {
 						handleZipUrl(href)
