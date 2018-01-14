@@ -19,7 +19,7 @@ var (
 	source   string
 	fs       string
 	issueUrl = "https://github.com/sundy-li/wechat_brain/issues/17"
-	tmpDir   = "/data/tmp/"
+	tmpDir   = "/tmp/"
 )
 
 func init() {
