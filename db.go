@@ -108,6 +108,7 @@ func MergeQuestions(fs ...string) {
 			log.Println("error in merge file db "+f, err.Error())
 			continue
 		}
+		defer thirdDb.Close()
 		thirdDb.View(func(thirdTx *bolt.Tx) error {
 			// Assume bucket exists and has keys
 			b := thirdTx.Bucket([]byte(QuestionBucket))
