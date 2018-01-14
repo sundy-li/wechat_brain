@@ -111,7 +111,7 @@ func MergeQuestions(fs ...string) {
 					//三方包的时间
 					q := DecodeQuestionCols(v, 0)
 					//数据库中的时间
-					if q.Update > FetchQuestionTime(string(k)) {
+					if q.Update < FetchQuestionTime(string(k)) {
 						b.Put(k, q.GetData())
 					}
 					return nil
