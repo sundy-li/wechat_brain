@@ -21,7 +21,7 @@ func init() {
 		log.Fatal(err)
 	}
 	memoryDb.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucket([]byte(QuestionBucket))
+		_, err := tx.CreateBucketIfNotExists([]byte(QuestionBucket))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
@@ -45,6 +45,9 @@ func FetchQuestion(question *Question) (str string) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
 		v := b.Get([]byte(question.Data.Quiz))
+		if len(v) == 0 {
+			return nil
+		}
 		q := DecodeQuestionCols(v, time.Now().Unix())
 		str = q.Answer
 		return nil
@@ -56,6 +59,10 @@ func FetchQuestionTime(quiz string) (res int64) {
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionBucket))
 		v := b.Get([]byte(quiz))
+		if len(v) == 0 {
+			res = -1
+			return nil
+		}
 		q := DecodeQuestionCols(v, time.Now().Unix())
 		res = q.Update
 		return nil
@@ -112,6 +119,7 @@ func MergeQuestions(fs ...string) {
 					q := DecodeQuestionCols(v, 0)
 					//数据库中的时间
 					if q.Update > FetchQuestionTime(string(k)) {
+						i++
 						b.Put(k, q.GetData())
 					}
 					return nil
