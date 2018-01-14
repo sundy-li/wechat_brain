@@ -22,7 +22,7 @@ var (
 	source   string
 	fs       string
 	issueUrl = "https://github.com/sundy-li/wechat_brain/issues/17"
-	tmpDir   = "/data/tmp/"
+	tmpDir   = "/tmp/"
 )
 
 func init() {
@@ -56,8 +56,9 @@ func main() {
 				}
 			})
 		})
+	} else {
+		brain.ShowAllQuestions()
 	}
-	// brain.ShowAllQuestions()
 	total := brain.CountQuestions()
 	log.Println("total questions =>", total)
 }
