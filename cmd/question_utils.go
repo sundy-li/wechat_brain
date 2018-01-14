@@ -48,8 +48,9 @@ func main() {
 				}
 			})
 		})
+	} else {
+		brain.ShowAllQuestions()
 	}
-	brain.ShowAllQuestions()
 	total := brain.CountQuestions()
 	log.Println("total questions =>", total)
 }
