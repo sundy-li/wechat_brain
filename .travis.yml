@@ -25,4 +25,4 @@ branches:
     - travis
 env:
   global:
-    - GH_REF: github.com/uoks/wechat_brain.git
+    - GH_REF: github.com/sundy-li/wechat_brain.git
