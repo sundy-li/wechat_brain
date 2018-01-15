@@ -55,7 +55,7 @@ func handleQuestionResp(bs []byte) (bsNew []byte) {
 		}
 	}
 	bsNew, _ = json.Marshal(respQuestion)
-	log.Printf("response findQuiz%v\n", string(bsNew))
+	log.Printf("Response findQuiz%v\n", string(bsNew))
 	return bsNew
 }
 
