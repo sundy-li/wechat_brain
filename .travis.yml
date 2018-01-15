@@ -5,10 +5,6 @@ go:
 install: true
 
 before_script:
-  - mkdir -p vendor/github.com/sundy-li/
-  - cd vendor/github.com/sundy-li/
-  - git clone --branch=master "https://${GH_TOKEN}@${GH_REF}"
-  - cd wechat_brain
   # 环境错误
   - rm -rf spider.go
 
@@ -22,7 +18,7 @@ after_script:
 
 branches:
   only:
-    - travis
+    - master
 env:
   global:
     - GH_REF: github.com/sundy-li/wechat_brain.git
