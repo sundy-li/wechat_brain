@@ -13,7 +13,7 @@ script:
 
 after_script:
   - git add *.data
-  - git commit -m "auto update data"
+  - git commit -m "[skip ci]auto update data"
   - git push -f --quiet
 
 branches:
