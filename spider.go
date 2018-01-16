@@ -49,7 +49,7 @@ func (s *spider) Init() {
 			bs, _ := ioutil.ReadAll(req.Body)
 			req.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			handleChooseReq(bs)
-		} else if ctx.Req.URL.Hostname() == `abc.com` {
+		} else if ctx.Req.URL.Host == `abc.com` {
 			resp = new(http.Response)
 			resp.StatusCode = 200
 			resp.Header = make(http.Header)
