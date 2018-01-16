@@ -41,11 +41,11 @@ func (s *spider) Run(port string) {
 func (s *spider) Init() {
 	requestHandleFunc := func(request *http.Request, ctx *goproxy.ProxyCtx) (req *http.Request, resp *http.Response) {
 		req = request
-		if ctx.Req.URL.Path == `/question/fight/findQuiz` {
+		if ctx.Req.URL.Path == `/question/bat/findQuiz` {
 			bs, _ := ioutil.ReadAll(req.Body)
 			req.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			handleQuestionReq(bs)
-		} else if ctx.Req.URL.Path == `/question/fight/choose` {
+		} else if ctx.Req.URL.Path == `/question/bat/choose` {
 			bs, _ := ioutil.ReadAll(req.Body)
 			req.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			handleChooseReq(bs)
@@ -63,12 +63,12 @@ func (s *spider) Init() {
 		if resp == nil {
 			return resp
 		}
-		if ctx.Req.URL.Path == `/question/fight/findQuiz` {
+		if ctx.Req.URL.Path == `/question/bat/findQuiz` {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			bsNew := handleQuestionResp(bs)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
 
-		} else if ctx.Req.URL.Path == `/question/fight/choose` {
+		} else if ctx.Req.URL.Path == `/question/bat/choose` {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			go handleChooseResponse(bs)
