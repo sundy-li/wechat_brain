@@ -93,6 +93,9 @@ func handleChooseResponse(bs []byte) {
 		return
 	}
 	question.CalData.TrueAnswer = question.Data.Options[chooseResp.Data.Answer-1]
+	if chooseResp.Data.Yes {
+		question.CalData.TrueAnswer = question.Data.Options[chooseResp.Data.Option-1]
+	}
 	log.Printf("Saving %s , %s", question.Data.Quiz, question.CalData.TrueAnswer)
 	StoreQuestion(question)
 }
