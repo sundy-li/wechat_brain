@@ -104,11 +104,11 @@ func MergeQuestions(fs ...string) {
 	var i int
 	for _, f := range fs {
 		thirdDb, err := bolt.Open(f, 0600, nil)
+		defer thirdDb.Close()
 		if err != nil {
 			log.Println("error in merge file db "+f, err.Error())
 			continue
 		}
-		defer thirdDb.Close()
 		thirdDb.View(func(thirdTx *bolt.Tx) error {
 			// Assume bucket exists and has keys
 			b := thirdTx.Bucket([]byte(QuestionBucket))

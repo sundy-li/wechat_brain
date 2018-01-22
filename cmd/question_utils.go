@@ -43,12 +43,13 @@ func main() {
 		brain.MergeQuestions(files...)
 	} else if source == "issue" {
 		doc, _ := goquery.NewDocument(issueUrl)
-		doc.Find("div.comment").Each(func(index int, comment *goquery.Selection) {
+		doc.Find("div.timeline-comment-wrapper").Each(func(index int, comment *goquery.Selection) {
+			author := comment.Find("a.author").Text()
 			comment.Find("td.d-block p a").Each(func(i int, s *goquery.Selection) {
 				if strings.Contains(s.Text(), ".zip") {
 					href, _ := s.Attr("href")
 					if href != "" {
-						err := handleZipUrl(href)
+						err := handleZipUrl(author, href)
 						if err != nil {
 							log.Println("Error", err.Error())
 						}
@@ -63,8 +64,8 @@ func main() {
 	log.Println("total questions =>", total)
 }
 
-func handleZipUrl(url string) error {
-	println("handling", url)
+func handleZipUrl(author, url string) error {
+	println("handling", author, url)
 	var exist bool
 	memoryDb.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(QuestionUrlBucket))
