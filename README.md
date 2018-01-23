@@ -47,6 +47,12 @@
 ## 合并题库
 - 请将questions.data文件压缩为zip文件后提交到[这里](https://github.com/sundy-li/wechat_brain/issues/17), 题库将会定期合并更新。
 
+## 【辅助功能】安卓自动刷题
+* 该功能默认关闭，需要打开请到spider文件clickProcess函数中将enableFlag设为true
+* 该功能需要将手机连接到电脑，并安装adb，且需要在开发者模式中打开usb调试模式
+* 使用前请根据自身手机分辨率，调整spider文件clickProcess中的相应参数：手机屏幕中心x坐标，第一个选项中心y坐标，排位列表中最后一项中心y坐标
+* 在华为，小米等机型上测试正常
+
 ## 轻松上王者效果图
 
 <div align="center">    
