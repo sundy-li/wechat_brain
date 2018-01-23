@@ -16,9 +16,10 @@
 
 #### 以下为PC电脑操作步骤
 
-- 运行主程序。运行方法（二选一)
+- 运行主程序。运行方法（三选一)
 	1. 方法一: 在[release](https://github.com/sundy-li/wechat_brain/releases)页面下载对应的操作系统执行文件, 解压后, 将最新版本的[questions.data](https://github.com/sundy-li/wechat_brain/blob/master/questions.data) 文件下载到同一个目录, 然后运行brain文件即可,命令行输入`./brain` 
 	2. 方法二: 安装go(>=1.8)环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`。
+	3. 方法二: 使用docker命令运行：docker run -p 8998:8998 --name **my_wachat_brain** -d **vallen/wachat_brain:latest**
 
 - 新版本(version >= v0.18)加入了两种模式, 大家根据自己的需求选择模式运行
 	1. 模式一: 默认模式, 修改了服务端返回的数据, 更加友好地提示正确答案, 运行方式如上所述: `./brain` 或者源码下执行 `go run cmd/main.go`
