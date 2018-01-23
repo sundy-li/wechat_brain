@@ -11,13 +11,15 @@ import (
 
 var (
 	_spider = newSpider()
+	Mode    int
 )
 
 type spider struct {
 	proxy *goproxy.ProxyHttpServer
 }
 
-func Run(port string) {
+func Run(port string, mode int) {
+	Mode = mode
 	_spider.Init()
 	_spider.Run(port)
 }

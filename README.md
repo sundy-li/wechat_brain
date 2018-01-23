@@ -20,6 +20,10 @@
 	1. 方法一: 在[release](https://github.com/sundy-li/wechat_brain/releases)页面下载对应的操作系统执行文件, 解压后, 将最新版本的[questions.data](https://github.com/sundy-li/wechat_brain/blob/master/questions.data) 文件下载到同一个目录, 然后运行brain文件即可,命令行输入`./brain` 
 	2. 方法二: 安装go(>=1.8)环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`。
 
+- 新版本(version >= v0.18)加入了两种模式, 大家根据自己的需求选择模式运行
+	1. 模式一: 默认模式, 修改了服务端返回的数据, 更加友好地提示正确答案, 运行方式如上所述: `./brain` 或者源码下执行 `go run cmd/main.go`
+	2. 模式二: 隐身模式, 严格返回原始数据, 该模式可以防止作弊检测(客户端提交返回题目和服务端对比,模式一很容易被侦测出使用了作弊, 模式二避免了这类检测), 但该模式的缺点是降低了用户的体验,题目答案的提示只能在PC电脑上显示, 运行方式如上所述 `./brain -m 1` 或者源码下执行 `go run cmd/main.go -m 1`
+
 #### 以下为手机安装步骤
 
 - 设置手机代理。手机连接wifi后进行代理设置，代理IP为个人pc的内网ip地址,以及端口为8998,移动网络下可通过设置新建APN并在其中设置代理的方式实现。如：

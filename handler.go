@@ -1,6 +1,7 @@
 package wechat_brain
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"net/url"
@@ -55,8 +56,19 @@ func handleQuestionResp(bs []byte) (bsNew []byte) {
 		}
 	}
 	bsNew, _ = json.Marshal(respQuestion)
-	log.Printf("Response findQuiz%v\n", string(bsNew))
-	return bsNew
+
+	var out bytes.Buffer
+	json.Indent(&out, bsNew, "", " ")
+	log.Printf("Question answer predict => %v\n", out.String())
+
+	//直接将答案返回在客户端,可能导致封号,所以只在服务端显示
+	if Mode == 0 {
+		//返回修改后的答案
+		return out.Bytes()
+	} else {
+		//返回答案
+		return bs
+	}
 }
 
 //hijack 提交请求
