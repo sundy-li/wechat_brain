@@ -89,7 +89,7 @@ func (s *spider) Init() {
 }
 
 func clickProcess(ansPos int) {
-	var enableFlag = true // control flag
+	var enableFlag = false // control flag
 	var screanCenterX = 550 // center of screen
 	var firstItemY = 1280 // center of first item (y)
 	var qualifyingItemY = 2000 // 排位列表最后一项 y 坐标
