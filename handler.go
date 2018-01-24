@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/url"
 	"strconv"
 	"time"
@@ -38,7 +39,7 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 	question.CalData.TrueAnswer = answer
 	question.CalData.Answer = answer
 	SetQuestion(question)
-	
+
 	ansPos = 0
 	respQuestion := &Question{}
 	json.Unmarshal(bs, respQuestion)
@@ -55,7 +56,7 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 		for i, option := range respQuestion.Data.Options {
 			if ret[option] > 0 {
 				respQuestion.Data.Options[i] = option + "[" + strconv.Itoa(ret[option]) + "]"
-				if ret[option] > max { 
+				if ret[option] > max {
 					max = ret[option]
 					ansPos = i + 1
 				}
@@ -68,11 +69,16 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 	json.Indent(&out, bsNew, "", " ")
 	//log.Printf("Question answer predict => %v\n", out.String())
 	var answerItem string = "不知道"
-	if ansPos != 0 { answerItem = respQuestion.Data.Options[ansPos - 1] }
+	if ansPos != 0 {
+		answerItem = respQuestion.Data.Options[ansPos-1]
+	} else {
+		//随机点击
+		ansPos = rand.Intn(4) + 1
+	}
 	log.Printf("Question answer predict =>\n 【题目】 %v\n 【正确答案】%v\n", respQuestion.Data.Quiz, answerItem)
 
 	//直接将答案返回在客户端,可能导致封号,所以只在服务端显示
-	if Mode == 0 || Mode == 2 {
+	if Mode == 0 {
 		//返回修改后的答案
 		return out.Bytes(), ansPos
 	} else {

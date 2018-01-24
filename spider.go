@@ -6,23 +6,25 @@ import (
 	"log"
 	"net/http"
 	"os/exec"
-	"time"
 	"strconv"
+	"time"
 
 	"github.com/coreos/goproxy"
 )
 
 var (
-	_spider = newSpider()
-	Mode    int
+	_spider   = newSpider()
+	Mode      int
+	AutoMatic int
 )
 
 type spider struct {
 	proxy *goproxy.ProxyHttpServer
 }
 
-func Run(port string, mode int) {
+func Run(port string, mode, automatic int) {
 	Mode = mode
+	AutoMatic = automatic
 	_spider.Init()
 	_spider.Run(port)
 }
@@ -65,18 +67,24 @@ func (s *spider) Init() {
 		return
 	}
 	responseHandleFunc := func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
-		if resp == nil { return resp }
+		if resp == nil {
+			return resp
+		}
 		if ctx.Req.URL.Path == "/question/bat/findQuiz" || ctx.Req.URL.Path == "/question/fight/findQuiz" {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			bsNew, ansPos := handleQuestionResp(bs)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
-			if Mode == 2 { go clickProcess(ansPos) } // click answer
-		}else if ctx.Req.URL.Path == "/question/bat/choose" || ctx.Req.URL.Path == "/question/fight/choose" {
+			if AutoMatic == 1 {
+				go clickProcess(ansPos)
+			} // click answer
+		} else if ctx.Req.URL.Path == "/question/bat/choose" || ctx.Req.URL.Path == "/question/fight/choose" {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			go handleChooseResponse(bs)
-		}else if ctx.Req.URL.Path == "/question/bat/fightResult" || ctx.Req.URL.Path == "/question/fight/fightResult" {
-			if Mode == 2 { go clickProcess(-1) } // go to next match
+		} else if ctx.Req.URL.Path == "/question/bat/fightResult" || ctx.Req.URL.Path == "/question/fight/fightResult" {
+			if AutoMatic == 1 {
+				go clickProcess(-1)
+			} // go to next match
 		}
 		return resp
 	}
@@ -85,18 +93,18 @@ func (s *spider) Init() {
 }
 
 func clickProcess(ansPos int) {
-	var screanCenterX = 550 // center of screen
-	var firstItemY = 1280 // center of first item (y)
+	var screanCenterX = 550    // center of screen
+	var firstItemY = 1280      // center of first item (y)
 	var qualifyingItemY = 2000 // 排位列表最后一项 y 坐标
-	if(ansPos >= 0) {
+	if ansPos >= 0 {
 		log.Printf("【点击】正在点击选项：%d", ansPos)
-		time.Sleep(time.Millisecond * 3800) //延迟
-		go clickAction(screanCenterX, firstItemY + 200 * (ansPos - 1)) // process click
-	}else{
+		time.Sleep(time.Millisecond * 3800)                      //延迟
+		go clickAction(screanCenterX, firstItemY+200*(ansPos-1)) // process click
+	} else {
 		// go to next match
 		log.Printf("【点击】将点击继续挑战按钮...")
 		time.Sleep(time.Millisecond * 7500)
-		go clickAction(screanCenterX, firstItemY + 400) // 继续挑战 按钮在第三个item处
+		go clickAction(screanCenterX, firstItemY+400) // 继续挑战 按钮在第三个item处
 		log.Printf("【点击】将点击排位列表底部一项，进行比赛匹配...")
 		time.Sleep(time.Millisecond * 2000)
 		go clickAction(screanCenterX, qualifyingItemY)
@@ -106,8 +114,10 @@ func clickProcess(ansPos int) {
 func clickAction(posX int, posY int) {
 	var err error
 	touchX, touchY := strconv.Itoa(posX), strconv.Itoa(posY)
-	_, err = exec.Command("adb","shell", "input", "swipe", touchX, touchY,touchX, touchY).Output()
-	if err != nil { log.Fatal("error: check adb connection.") }
+	_, err = exec.Command("adb", "shell", "input", "swipe", touchX, touchY, touchX, touchY).Output()
+	if err != nil {
+		log.Fatal("error: check adb connection.")
+	}
 }
 
 func orPanic(err error) {
