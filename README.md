@@ -21,9 +21,10 @@
 	2. 方法二: 安装go(>=1.8)环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`。
 	3. 方法三: 使用docker命令运行：`docker build . -t wechat_brain  &&  docker run -p 8998:8998 --name my_wechat_brain -d wechat_brain`
 
-- 新版本(version >= v0.18)加入了两种模式, 大家根据自己的需求选择模式运行
+- 新版本(version >= v0.18)加入了三种模式, 大家根据自己的需求选择模式运行
 	1. 模式一: 默认模式, 修改了服务端返回的数据, 更加友好地提示正确答案, 运行方式如上所述: `./brain` 或者源码下执行 `go run cmd/main.go`
 	2. 模式二: 隐身模式, 严格返回原始数据, 该模式可以防止作弊检测(客户端提交返回题目和服务端对比,模式一很容易被侦测出使用了作弊, 模式二避免了这类检测), 但该模式的缺点是降低了用户的体验,题目答案的提示只能在PC电脑上显示, 运行方式如上所述 `./brain -m 1` 或者源码下执行 `go run cmd/main.go -m 1`
+	3. 模式三：自动模式，安卓机的自动刷题模式，需要将手机连接到电脑，并安装adb，且需要在开发者模式中打开usb调试，使用前请根据自身手机分辨率，调整spider文件clickProcess中的相应参数：手机屏幕中心x坐标，第一个选项中心y坐标，排位列表中最后一项中心y坐标。运行方式如上所述 `./brain -m 2` 或者源码下执行 `go run cmd/main.go -m 2`
 
 #### 以下为手机安装步骤
 
