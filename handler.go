@@ -72,7 +72,7 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 	log.Printf("Question answer predict =>\n 【题目】 %v\n 【正确答案】%v\n", respQuestion.Data.Quiz, answerItem)
 
 	//直接将答案返回在客户端,可能导致封号,所以只在服务端显示
-	if Mode == 0 {
+	if Mode == 0 || Mode ==3 {
 		//返回修改后的答案
 		return out.Bytes(), ansPos
 	} else {

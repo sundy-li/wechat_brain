@@ -66,21 +66,17 @@ func (s *spider) Init() {
 	}
 	responseHandleFunc := func(resp *http.Response, ctx *goproxy.ProxyCtx) *http.Response {
 		if resp == nil { return resp }
-		switch ctx.Req.URL.Path {
-			case "/question/bat/findQuiz":
-				bs, _ := ioutil.ReadAll(resp.Body)
-				bsNew,ansPos := handleQuestionResp(bs)
-				resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
-				go clickProcess(ansPos) // click answer
-				break
-			case "/question/bat/choose":
-				bs, _ := ioutil.ReadAll(resp.Body)
-				resp.Body = ioutil.NopCloser(bytes.NewReader(bs))
-				go handleChooseResponse(bs)
-				break
-			case "/question/bat/fightResult":
-				go clickProcess(-1) // go to next match
-				break
+		if ctx.Req.URL.Path == "/question/bat/findQuiz" || ctx.Req.URL.Path == "/question/fight/findQuiz" {
+			bs, _ := ioutil.ReadAll(resp.Body)
+			bsNew, ansPos := handleQuestionResp(bs)
+			resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
+			if Mode == 3 { go clickProcess(ansPos) } // click answer
+		}else if ctx.Req.URL.Path == "/question/bat/choose" || ctx.Req.URL.Path == "/question/fight/choose" {
+			bs, _ := ioutil.ReadAll(resp.Body)
+			resp.Body = ioutil.NopCloser(bytes.NewReader(bs))
+			go handleChooseResponse(bs)
+		}else if ctx.Req.URL.Path == "/question/bat/fightResult" || ctx.Req.URL.Path == "/question/fight/fightResult" {
+			if Mode == 3 { go clickProcess(-1) } // go to next match
 		}
 		return resp
 	}
@@ -89,25 +85,21 @@ func (s *spider) Init() {
 }
 
 func clickProcess(ansPos int) {
-	var enableFlag = false // control flag
 	var screanCenterX = 550 // center of screen
 	var firstItemY = 1280 // center of first item (y)
 	var qualifyingItemY = 2000 // 排位列表最后一项 y 坐标
-	
-	if(enableFlag) {
-		if(ansPos >= 0) {
-			log.Printf("【点击】正在点击选项：%d", ansPos)
-			time.Sleep(time.Millisecond * 3800) //延迟
-			go clickAction(screanCenterX, firstItemY + 200 * (ansPos - 1)) // process click
-		}else{
-			// go to next match
-			log.Printf("【点击】将点击继续挑战按钮...")
-			time.Sleep(time.Millisecond * 7500)
-			go clickAction(screanCenterX, firstItemY + 400) // 继续挑战 按钮在第三个item处
-			log.Printf("【点击】将点击排位列表底部一项，进行比赛匹配...")
-			time.Sleep(time.Millisecond * 2000)
-			go clickAction(screanCenterX, qualifyingItemY)
-		}
+	if(ansPos >= 0) {
+		log.Printf("【点击】正在点击选项：%d", ansPos)
+		time.Sleep(time.Millisecond * 3800) //延迟
+		go clickAction(screanCenterX, firstItemY + 200 * (ansPos - 1)) // process click
+	}else{
+		// go to next match
+		log.Printf("【点击】将点击继续挑战按钮...")
+		time.Sleep(time.Millisecond * 7500)
+		go clickAction(screanCenterX, firstItemY + 400) // 继续挑战 按钮在第三个item处
+		log.Printf("【点击】将点击排位列表底部一项，进行比赛匹配...")
+		time.Sleep(time.Millisecond * 2000)
+		go clickAction(screanCenterX, qualifyingItemY)
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	brain "wechat_brain"
+	brain "github.com/sundy-li/wechat_brain"
 )
 
 var (

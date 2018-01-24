@@ -20,9 +20,10 @@
 	1. 方法一: 在[release](https://github.com/sundy-li/wechat_brain/releases)页面下载对应的操作系统执行文件, 解压后, 将最新版本的[questions.data](https://github.com/sundy-li/wechat_brain/blob/master/questions.data) 文件下载到同一个目录, 然后运行brain文件即可,命令行输入`./brain` 
 	2. 方法二: 安装go(>=1.8)环境后, clone本repo源码到对应`$GOPATH/src/github.com/sundy-li/`下, 进入源码目录后,执行 `go run cmd/main.go`。
 
-- 新版本(version >= v0.18)加入了两种模式, 大家根据自己的需求选择模式运行
+- 新版本(version >= v0.18)加入了三种模式, 大家根据自己的需求选择模式运行
 	1. 模式一: 默认模式, 修改了服务端返回的数据, 更加友好地提示正确答案, 运行方式如上所述: `./brain` 或者源码下执行 `go run cmd/main.go`
 	2. 模式二: 隐身模式, 严格返回原始数据, 该模式可以防止作弊检测(客户端提交返回题目和服务端对比,模式一很容易被侦测出使用了作弊, 模式二避免了这类检测), 但该模式的缺点是降低了用户的体验,题目答案的提示只能在PC电脑上显示, 运行方式如上所述 `./brain -m 1` 或者源码下执行 `go run cmd/main.go -m 1`
+	3. 模式三：自动模式，安卓机的自动刷题模式，需要将手机连接到电脑，并安装adb，且需要在开发者模式中打开usb调试，使用前请根据自身手机分辨率，调整spider文件clickProcess中的相应参数：手机屏幕中心x坐标，第一个选项中心y坐标，排位列表中最后一项中心y坐标。运行方式如上所述 `./brain -m 3` 或者源码下执行 `go run cmd/main.go -m 3`
 
 #### 以下为手机安装步骤
 
@@ -46,12 +47,6 @@
 
 ## 合并题库
 - 请将questions.data文件压缩为zip文件后提交到[这里](https://github.com/sundy-li/wechat_brain/issues/17), 题库将会定期合并更新。
-
-## 【辅助功能】安卓自动刷题
-* 该功能默认关闭，需要打开请到spider文件clickProcess函数中将enableFlag设为true
-* 该功能需要将手机连接到电脑，并安装adb，且需要在开发者模式中打开usb调试模式
-* 使用前请根据自身手机分辨率，调整spider文件clickProcess中的相应参数：手机屏幕中心x坐标，第一个选项中心y坐标，排位列表中最后一项中心y坐标
-* 在华为，小米等机型上测试正常
 
 ## 轻松上王者效果图
 
