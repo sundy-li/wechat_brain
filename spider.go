@@ -70,13 +70,13 @@ func (s *spider) Init() {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			bsNew, ansPos := handleQuestionResp(bs)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bsNew))
-			if Mode == 3 { go clickProcess(ansPos) } // click answer
+			if Mode == 2 { go clickProcess(ansPos) } // click answer
 		}else if ctx.Req.URL.Path == "/question/bat/choose" || ctx.Req.URL.Path == "/question/fight/choose" {
 			bs, _ := ioutil.ReadAll(resp.Body)
 			resp.Body = ioutil.NopCloser(bytes.NewReader(bs))
 			go handleChooseResponse(bs)
 		}else if ctx.Req.URL.Path == "/question/bat/fightResult" || ctx.Req.URL.Path == "/question/fight/fightResult" {
-			if Mode == 3 { go clickProcess(-1) } // go to next match
+			if Mode == 2 { go clickProcess(-1) } // go to next match
 		}
 		return resp
 	}
