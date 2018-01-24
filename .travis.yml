@@ -5,8 +5,7 @@ go:
 install: true
 
 before_script:
-  # 环境错误
-  - rm -rf spider.go
+  - echo "start merging zip file from issues"
 
 script:
    - go run cmd/question_utils.go -s="issue"
