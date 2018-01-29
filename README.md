@@ -51,11 +51,19 @@
 </div>
 
 ## 问题
+- [FAQ](https://github.com/sundy-li/wechat_brain/blob/master/docs/FAQ.md)
 - 感谢@HsiangHo, @milkmeowo 的贡献,修复了ios代理问题,更新新版本后,最好重新安装证书,重启微信进程
   ~~~ios端由于goproxy无法代理websocket问题,暂时无法使用,希望大家可以来完善这个问题,见[这个issue](https://github.com/sundy-li/wechat_brain/issues/18)~~~
 
 ## 合并题库
 - 请将questions.data文件压缩为zip文件后提交到[这里](https://github.com/sundy-li/wechat_brain/issues/17), 题库将会定期合并更新。
+
+## 支持
+维护开源软件需要花费很大时间精力,如果各位觉得本工具对你有帮助,可以请我喝杯咖啡支持一下
+<div align="center">    
+ <img src="./docs/donate.png" width = "200" align=center />
+</div>
+
 
 ## 轻松上王者效果图
 
