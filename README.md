@@ -61,7 +61,7 @@
 ## 支持
 维护开源软件需要花费很大时间精力,如果各位觉得本工具对你有帮助,可以请我喝杯咖啡支持一下
 <div align="center">    
- <img src="./docs/donate.png" width = "200" align=center />
+ <img src="./docs/donate.jpg" width = "350" align=center />
 </div>
 
 
