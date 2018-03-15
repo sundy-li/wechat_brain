@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"math"
 	"math/rand"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -49,6 +51,16 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 				respQuestion.Data.Options[i] = option + "[标准答案]"
 				ansPos = i + 1
 				break
+			}
+		}
+	} else if strings.Contains(question.Data.Quiz, "不") {
+		//当题目中有“不”时，选取百度结果中最罕见的选项
+		var min = math.MaxInt32
+		for i, option := range respQuestion.Data.Options {
+			respQuestion.Data.Options[i] = option + "[" + strconv.Itoa(ret[option]) + "]"
+			if ret[option] < min {
+				min = ret[option]
+				ansPos = i + 1
 			}
 		}
 	} else {
