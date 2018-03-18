@@ -53,7 +53,7 @@ func handleQuestionResp(bs []byte) (bsNew []byte, ansPos int) {
 				break
 			}
 		}
-	} else if strings.Contains(question.Data.Quiz, "不") {
+	} else if strings.Contains(question.Data.Quiz, "不") && !strings.Contains(question.Data.Quiz, "「") {
 		//当题目中有“不”时，选取百度结果中最罕见的选项
 		var min = math.MaxInt32
 		for i, option := range respQuestion.Data.Options {
